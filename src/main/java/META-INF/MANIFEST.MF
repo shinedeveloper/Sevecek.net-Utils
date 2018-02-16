@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Implementation-Title: Sevecek.net Utils
+Implementation-Version: 0.9
