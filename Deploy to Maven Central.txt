@@ -1,0 +1,33 @@
+1. mvn clean package
+
+2. zip artifacts
+sevecek-net-utils-0.9.1.jar
+sevecek-net-utils-0.9.1.jar.asc
+sevecek-net-utils-0.9.1.pom
+sevecek-net-utils-0.9.1.pom.asc
+sevecek-net-utils-0.9.1-javadoc.jar
+sevecek-net-utils-0.9.1-javadoc.jar.asc
+sevecek-net-utils-0.9.1-sources.jar
+sevecek-net-utils-0.9.1-sources.jar.asc
+
+3. Upload to staging repository
+https://central.sonatype.org/pages/manual-staging-bundle-creation-and-deployment.html
+
+4. Check presence of the artifact
+https://oss.sonatype.org/#view-repositories;staging~browsestorage
+
+5. Click Release button
+https://central.sonatype.org/pages/releasing-the-deployment.html
+
+6. Check presence of the artifact in the public repository
+https://oss.sonatype.org/#view-repositories;public~browsestorage
+
+7. Update of Maven Central search takes a few hours. But maven will find the artifact if you explicitly configure it.
+<dependency>
+    <groupId>net.sevecek</groupId>
+    <artifactId>sevecek-net-utils</artifactId>
+    <version>0.9.1</version>
+</dependency>
+
+You can also check the presence here:
+https://repo.maven.apache.org/maven2/
