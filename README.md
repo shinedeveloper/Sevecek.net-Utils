@@ -10,6 +10,6 @@ Add this maven dependency:
 <dependency>
     <groupId>net.sevecek</groupId>
     <artifactId>sevecek-net-utils</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
 </dependency>
 ~~~~
