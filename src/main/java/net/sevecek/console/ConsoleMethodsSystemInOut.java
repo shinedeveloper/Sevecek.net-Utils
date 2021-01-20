@@ -1,10 +1,9 @@
 package net.sevecek.console;
 
 import java.io.*;
-import java.lang.ref.*;
-import java.lang.reflect.*;
-import java.nio.charset.*;
-import java.text.*;
+import java.lang.ref.WeakReference;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 
 class ConsoleMethodsSystemInOut extends AbstractConsoleMethods implements ConsoleMethods {
 
@@ -100,7 +99,6 @@ class ConsoleMethodsSystemInOut extends AbstractConsoleMethods implements Consol
             systemInCharset = Charset.forName(charsetName);
         } else {
             systemInCharset = Charset.defaultCharset();
-            // detectIDESystemInEncoding();
         }
         systemInReader = null;
     }
@@ -131,56 +129,18 @@ class ConsoleMethodsSystemInOut extends AbstractConsoleMethods implements Consol
     }
 
 
-    /*
-     * Ugly hack to detect original operating system encoding
-     * in all versions of NetBeans
-     * and IntelliJ IDEA versions 10.5 or less.
-     * Known to work on Sun/Oracle JDK 6, 7, 8.
-     * How about OpenJDK? IBM? Excelsior JET? JRockit?
-     */
-    private void detectIDESystemInEncoding() {
-        InputStream currentSystemIn = System.in;
-        if (currentSystemIn instanceof BufferedInputStream) {
-            try {
-                InputStream systemIn = (InputStream) readPrivateField(currentSystemIn, "in");
-
-                if (systemIn instanceof FileInputStream) {
-                    FileDescriptor fileDescriptor = ((FileInputStream) systemIn).getFD();
-                    readPrivateField(fileDescriptor, "fd");
-                    Field fdField = fileDescriptor.getClass().getDeclaredField("fd");
-                    boolean originalAccessibleFd = fdField.isAccessible();
-                    fdField.setAccessible(true);
-                    int fileDescriptorInt;
-                    try {
-                        fileDescriptorInt = fdField.getInt(fileDescriptor);
-                    } finally {
-                        fdField.setAccessible(originalAccessibleFd);
-                    }
-                    if (fileDescriptorInt == -1) {
-                        // We are using piped input stream.
-                        // Override the default encoding (UTF-8) to operating system default (Win1250)
-                        String originalEncoding = System.getProperty("sun.jnu.encoding");
-                        if (originalEncoding != null && !originalEncoding.isEmpty()) {
-                            systemInCharset = Charset.forName(originalEncoding);
-                        }
-                    }
-                }
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalAccessException e) {
-            } catch (IOException e) {
-            }
-        }
-    }
-
-
+    @SuppressWarnings("ObjectEquality")
     private synchronized BufferedReader getBufferedReaderForSystemIn() {
         InputStream currentSystemIn = System.in;
         if (systemInReader == null || systemInForWhichWeHaveReader == null
                 || systemInForWhichWeHaveReader.get() != currentSystemIn) {
-            systemInForWhichWeHaveReader = new WeakReference<InputStream>(currentSystemIn);
-            systemInReader = new BufferedReader(new InputStreamReader(currentSystemIn, systemInCharset));
+            systemInForWhichWeHaveReader = new WeakReference<>(currentSystemIn);
+            if (systemInCharset != null) {
+                systemInReader = new BufferedReader(new InputStreamReader(currentSystemIn, systemInCharset));
+            } else {
+                systemInReader = new BufferedReader(new InputStreamReader(currentSystemIn));
+            }
         }
         return systemInReader;
     }
-
 }

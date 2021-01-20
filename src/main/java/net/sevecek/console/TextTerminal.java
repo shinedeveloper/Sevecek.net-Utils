@@ -3,21 +3,23 @@ package net.sevecek.console;
 import java.awt.*;
 
 /**
- * TextConsole contains static methods to consistently and conveniently read from and print to the operating system console (also known as terminal or command prompt).
+ * TextTerminal contains methods to consistently and conveniently read from and print to the operating system console (also known as terminal or command prompt).
+ * It is an instance variant to the static TextConsole if you dislike calling static methods (e.g. for educational reasons).
  *
  * <p>
- * TextConsole is a replacement for limited or buggy <code>System.out</code>,
+ * TextTerminal is a replacement for limited or buggy <code>System.out</code>,
  * <code>System.in</code>, <code>BufferedReader.readLine()</code> and <code>Scanner</code>.
  * </p>
  *
  * <p>
  * It aims to provide easy usage. For example:
  * <pre>
- *     String line = TextConsole.readLine();
- *     int count = TextConsole.readInt();
- *     double amount = TextConsole.readDouble();
- *     TextConsole.println("Welcome");
- *     TextConsole.printf("The cycle will repeat %d times", count);
+ *     TextTerminal console = new TextTerminal();
+ *     String line = console.readLine();
+ *     int count = console.readInt();
+ *     double amount = console.readDouble();
+ *     console.println("Welcome");
+ *     console.printf("The cycle will repeat %d times", count);
  * </pre>
  * </p>
  *
@@ -52,7 +54,7 @@ import java.awt.*;
  * </p>
  *
  * <p>
- * TextConsole can also read a line, a single word, a password or just a single char:
+ * TextTerminal can also read a line, a single word, a password or just a single char:
  * <ul>
  *     <li><code>readLine()</code></li>
  *     <li><code>readWord()</code></li>
@@ -82,34 +84,18 @@ import java.awt.*;
  * @author Kamil Sevecek, kamil@sevecek.net
  * @version 1.2
  */
-public class TextConsole {
-
-    static {
-        if (System.console() != null) {
-            consoleMethods = new ConsoleMethodsJavaIOConsole();
-        } else {
-            consoleMethods = new ConsoleMethodsSystemInOut();
-        }
-    }
-
-
-    private static final ConsoleMethods consoleMethods;
-
-
-    private TextConsole() {
-    }
-
+public class TextTerminal {
 
     /**
      * Reads a single word from the console.
      * If the word is "true" (case insensitive), returns true,
      * otherwise returns false.
-     * Behaves exactly the same as <code>Boolean.parseBoolean(TextConsole.readWord());</code>
+     * Behaves exactly the same as <code>Boolean.parseBoolean(console.readWord());</code>
      *
      * @return true, if the word is "true" (case insensitive), otherwise false.
      */
-    public static synchronized boolean readBoolean() {
-        return consoleMethods.readBoolean();
+    public boolean readBoolean() {
+        return TextConsole.readBoolean();
     }
 
 
@@ -129,8 +115,8 @@ public class TextConsole {
      *
      * @return converted int value of the word read from the console
      */
-    public static synchronized int readInt() throws NumberFormatException {
-        return consoleMethods.readInt();
+    public int readInt() throws NumberFormatException {
+        return TextConsole.readInt();
     }
 
 
@@ -150,8 +136,8 @@ public class TextConsole {
      *
      * @return converted long value of the word read from the console
      */
-    public static synchronized long readLong() throws NumberFormatException {
-        return consoleMethods.readLong();
+    public long readLong() throws NumberFormatException {
+        return TextConsole.readLong();
     }
 
 
@@ -171,8 +157,8 @@ public class TextConsole {
      *
      * @return converted double value of the word read from the console
      */
-    public static synchronized double readDouble() throws NumberFormatException {
-        return consoleMethods.readDouble();
+    public double readDouble() throws NumberFormatException {
+        return TextConsole.readDouble();
     }
 
 
@@ -188,7 +174,7 @@ public class TextConsole {
      * This method reads the first char from the line
      * (excluding any whitespace characters)
      * and the rest of the line stays in the console buffer.
-     * A subsequent call to TextConsole.readChar() would read the next char
+     * A subsequent call to TextTerminal.readChar() would read the next char
      * from the console buffer
      * (without prompting the user) and so on until the entire buffer is empty.
      * Any further call would again prompt the user for the whole line
@@ -198,8 +184,8 @@ public class TextConsole {
      * @return single char read from the console buffer.
      *         If the buffer is empty, the command prompt will appear for the user to enter an entire line of text.
      */
-    public static synchronized char readChar() {
-        return consoleMethods.readChar();
+    public char readChar() {
+        return TextConsole.readChar();
     }
 
 
@@ -216,7 +202,7 @@ public class TextConsole {
      * This method reads the first unicode code point from the line
      * (excluding any whitespace characters)
      * and the rest of the line stays in the console buffer.
-     * A subsequent call to TextConsole.readCodePoint() would read
+     * A subsequent call to TextTerminal.readCodePoint() would read
      * the next unicode code point from the console buffer
      * (without prompting the user) and so on until the entire buffer is empty.
      * Any further call would again prompt the user for the whole line
@@ -226,8 +212,8 @@ public class TextConsole {
      * @return single unicode code point read from the console buffer.
      *         If the buffer is empty, the command prompt will appear for the user to enter an entire line of text.
      */
-    public static synchronized int readCodePoint() {
-        return consoleMethods.readCodePoint();
+    public int readCodePoint() {
+        return TextConsole.readCodePoint();
     }
 
 
@@ -247,8 +233,8 @@ public class TextConsole {
      *         If the buffer is empty, the command prompt will appear
      *         for the user to enter an entire line of text first.
      */
-    public static synchronized String readWord() {
-        return consoleMethods.readWord();
+    public String readWord() {
+        return TextConsole.readWord();
     }
 
 
@@ -264,8 +250,8 @@ public class TextConsole {
      *         If the buffer is empty, the command prompt will appear
      *         for the user to enter the line.
      */
-    public static synchronized String readLine() {
-        return consoleMethods.readLine();
+    public String readLine() {
+        return TextConsole.readLine();
     }
 
 
@@ -291,8 +277,8 @@ public class TextConsole {
      *         If the buffer is empty, the command prompt will appear
      *         for the user to enter the line.
      */
-    public static synchronized String readLine(String message, Object... args) {
-        return consoleMethods.readLine(message, args);
+    public String readLine(String message, Object... args) {
+        return TextConsole.readLine(message, args);
     }
 
 
@@ -315,8 +301,8 @@ public class TextConsole {
      *         If the buffer is empty, the command prompt will appear
      *         for the user to enter the line.
      */
-    public static synchronized char[] readPassword() {
-        return consoleMethods.readPassword();
+    public char[] readPassword() {
+        return TextConsole.readPassword();
     }
 
 
@@ -348,8 +334,8 @@ public class TextConsole {
      *         If the buffer is empty, the command prompt will appear
      *         for the user to enter the line.
      */
-    public static synchronized char[] readPassword(String message, Object... args) {
-        return consoleMethods.readPassword(message, args);
+    public char[] readPassword(String message, Object... args) {
+        return TextConsole.readPassword(message, args);
     }
 
 
@@ -360,12 +346,12 @@ public class TextConsole {
      * Prints a boolean value.
      * The string is either <code>true</code> or <code>false</code>.
      * It is exactly as produced by <code>{@link
-     * java.lang.Boolean#toString(boolean)}</code>.
+     * Boolean#toString(boolean)}</code>.
      *
      * @param value  The <code>boolean</code> to be printed
      */
-    public static synchronized void print(boolean value) {
-        consoleMethods.print(value);
+    public void print(boolean value) {
+        TextConsole.print(value);
     }
 
 
@@ -376,8 +362,8 @@ public class TextConsole {
      *
      * @param value the <code>int</code> to be printed
      */
-    public static synchronized void print(int value) {
-        consoleMethods.print(value);
+    public void print(int value) {
+        TextConsole.print(value);
     }
 
 
@@ -388,8 +374,8 @@ public class TextConsole {
      *
      * @param value the <code>long</code> to be printed
      */
-    public static synchronized void print(long value) {
-        consoleMethods.print(value);
+    public void print(long value) {
+        TextConsole.print(value);
     }
 
 
@@ -400,8 +386,8 @@ public class TextConsole {
      * applies to the fraction delimiting symbol (dot, comma, etc.)
      * @param value the <code>double</code> to be printed
      */
-    public static synchronized void print(double value) {
-        consoleMethods.print(value);
+    public void print(double value) {
+        TextConsole.print(value);
     }
 
 
@@ -409,8 +395,8 @@ public class TextConsole {
      * Prints a <code>char</code> value.
      * @param value the <code>char</code> to be printed
      */
-    public static synchronized void print(char value) {
-        consoleMethods.print(value);
+    public void print(char value) {
+        TextConsole.print(value);
     }
 
 
@@ -418,8 +404,8 @@ public class TextConsole {
      * Prints a <code>String</code> to the console.
      * @param text the <code>String</code> to be printed
      */
-    public static synchronized void print(String text) {
-        consoleMethods.print(text);
+    public void print(String text) {
+        TextConsole.print(text);
     }
 
 
@@ -432,16 +418,16 @@ public class TextConsole {
      *
      * @param obj the <code>Object</code> to be printed
      */
-    public static synchronized void print(Object obj) {
-        consoleMethods.print(obj);
+    public void print(Object obj) {
+        TextConsole.print(obj);
     }
 
 
     /**
      * Prints just a new line to the console.
      */
-    public static synchronized void println() {
-        consoleMethods.println();
+    public void println() {
+        TextConsole.println();
     }
 
 
@@ -449,14 +435,14 @@ public class TextConsole {
      * Prints a boolean value and a newline.
      * The string is either <code>true</code> or <code>false</code>.
      * It is exactly as produced by <code>{@link
-     * java.lang.Boolean#toString(boolean)}</code>.
+     * Boolean#toString(boolean)}</code>.
      * This method behaves exactly as if
      * {@link #print(char)} and {@link #println()} was invoked.
      *
      * @param value  The <code>boolean</code> to be printed
      */
-    public static synchronized void println(boolean value) {
-        consoleMethods.println(value);
+    public void println(boolean value) {
+        TextConsole.println(value);
     }
 
 
@@ -469,8 +455,8 @@ public class TextConsole {
      *
      * @param value the <code>int</code> to be printed
      */
-    public static synchronized void println(int value) {
-        consoleMethods.println(value);
+    public void println(int value) {
+        TextConsole.println(value);
     }
 
 
@@ -483,8 +469,8 @@ public class TextConsole {
      *
      * @param value the <code>long</code> to be printed
      */
-    public static synchronized void println(long value) {
-        consoleMethods.println(value);
+    public void println(long value) {
+        TextConsole.println(value);
     }
 
 
@@ -498,8 +484,8 @@ public class TextConsole {
      *
      * @param value the <code>double</code> to be printed
      */
-    public static synchronized void println(double value) {
-        consoleMethods.println(value);
+    public void println(double value) {
+        TextConsole.println(value);
     }
 
 
@@ -510,8 +496,8 @@ public class TextConsole {
      *
      * @param c the <code>char</code> to be printed
      */
-    public static synchronized void println(char c) {
-        consoleMethods.println(c);
+    public void println(char c) {
+        TextConsole.println(c);
     }
 
 
@@ -522,8 +508,8 @@ public class TextConsole {
      *
      * @param text the <code>String</code> to be printed
      */
-    public static synchronized void println(String text) {
-        consoleMethods.println(text);
+    public void println(String text) {
+        TextConsole.println(text);
     }
 
 
@@ -538,8 +524,8 @@ public class TextConsole {
      *
      * @param obj the <code>Object</code> to be printed
      */
-    public static synchronized void println(Object obj) {
-        consoleMethods.println(obj);
+    public void println(Object obj) {
+        TextConsole.println(obj);
     }
 
 
@@ -580,7 +566,7 @@ public class TextConsole {
      *                     <td>
 <pre>
 int count = 2;
-TextConsole.printf("Duke has %d hands", count);
+console.printf("Duke has %d hands", count);
 </pre>
      *                     </td>
      *                 </tr>
@@ -608,7 +594,7 @@ Duke has 2 hands
      *                     <td>
 <pre>
 double weight = 1.5;
-TextConsole.printf("Cart contains %f kg of apples", weight);
+console.printf("Cart contains %f kg of apples", weight);
 </pre>
      *                     </td>
      *                 </tr>
@@ -636,7 +622,7 @@ Cart contains 1.500000 kg of apples
      *                     <td>
 <pre>
 double weight = 1.5;
-TextConsole.printf("Cart contains %.2f kg of apples", weight);
+console.printf("Cart contains %.2f kg of apples", weight);
 </pre>
      *                     </td>
      *                 </tr>
@@ -663,7 +649,7 @@ Cart contains 1.50 kg of apples
      *                     <td>
 <pre>
 char letter = 'X';
-TextConsole.printf("Junction can be shortened using %c letter", letter);
+console.printf("Junction can be shortened using %c letter", letter);
 </pre>
      *                     </td>
      *                 </tr>
@@ -691,7 +677,7 @@ Junction can be shortened using X letter
      *                     <td>
 <pre>
 String name = "Duke";
-TextConsole.printf("My name is %s", name);
+console.printf("My name is %s", name);
 </pre>
      *                     </td>
      *                 </tr>
@@ -717,7 +703,7 @@ My name is Duke
      *                 <tr>
      *                     <td>
 <pre>
-TextConsole.printf("Hello%nGood bye");
+console.printf("Hello%nGood bye");
 </pre>
      *                     </td>
      *                 </tr>
@@ -743,8 +729,8 @@ Good bye
      *             If there are less arguments, IllegalArgumentException is raised.
      *             The behaviour on a <code>null</code> argument depends on the conversion.
      */
-    public static synchronized void printf(String format, Object... args) {
-        consoleMethods.printf(format, args);
+    public void printf(String format, Object... args) {
+        TextConsole.printf(format, args);
     }
 
 
@@ -785,7 +771,7 @@ Good bye
      *                     <td>
 <pre>
 int count = 2;
-TextConsole.printfln("Duke has %d hands", count);
+console.printfln("Duke has %d hands", count);
 </pre>
      *                     </td>
      *                 </tr>
@@ -813,7 +799,7 @@ Duke has 2 hands
      *                     <td>
 <pre>
 double weight = 1.5;
-TextConsole.printfln("Cart contains %f kg of apples", weight);
+console.printfln("Cart contains %f kg of apples", weight);
 </pre>
      *                     </td>
      *                 </tr>
@@ -841,7 +827,7 @@ Cart contains 1.500000 kg of apples
      *                     <td>
 <pre>
 double weight = 1.5;
-TextConsole.printfln("Cart contains %.2f kg of apples", weight);
+console.printfln("Cart contains %.2f kg of apples", weight);
 </pre>
      *                     </td>
      *                 </tr>
@@ -868,7 +854,7 @@ Cart contains 1.50 kg of apples
      *                     <td>
 <pre>
 char letter = 'X';
-TextConsole.printfln("Junction can be shortened using %c letter", letter);
+console.printfln("Junction can be shortened using %c letter", letter);
 </pre>
      *                     </td>
      *                 </tr>
@@ -896,7 +882,7 @@ Junction can be shortened using X letter
      *                     <td>
 <pre>
 String name = "Duke";
-TextConsole.printfln("My name is %s", name);
+console.printfln("My name is %s", name);
 </pre>
      *                     </td>
      *                 </tr>
@@ -922,7 +908,7 @@ My name is Duke
      *                 <tr>
      *                     <td>
 <pre>
-TextConsole.printfln("Hello%nGood bye");
+console.printfln("Hello%nGood bye");
 </pre>
      *                     </td>
      *                 </tr>
@@ -948,37 +934,37 @@ Good bye
      *             If there are less arguments, IllegalArgumentException is raised.
      *             The behaviour on a <code>null</code> argument depends on the conversion.
      */
-    public static synchronized void printfln(String format, Object... args) {
-        consoleMethods.printfln(format, args);
+    public void printfln(String format, Object... args) {
+        TextConsole.printfln(format, args);
     }
 
 
-    public static synchronized String getInputCharset() {
-        return consoleMethods.getInputCharset();
+    public String getInputCharset() {
+        return TextConsole.getInputCharset();
     }
 
 
-    public static synchronized void setInputCharset(String charsetName) {
-        consoleMethods.setInputCharset(charsetName);
+    public void setInputCharset(String charsetName) {
+        TextConsole.setInputCharset(charsetName);
     }
 
 
-    public static synchronized String getOutputCharset() {
-        return consoleMethods.getOutputCharset();
+    public String getOutputCharset() {
+        return TextConsole.getOutputCharset();
     }
 
 
-    public static synchronized void setOutputCharset(String charsetName) {
-        consoleMethods.setOutputCharset(charsetName);
+    public void setOutputCharset(String charsetName) {
+        TextConsole.setOutputCharset(charsetName);
     }
 
 
-    public static synchronized void setTextColor(Color color) {
-        consoleMethods.setTextColor(color);
+    public synchronized void setTextColor(Color color) {
+        TextConsole.setTextColor(color);
     }
 
 
-    public static synchronized void setBackgroundColor(Color color) {
-        consoleMethods.setBackgroundColor(color);
+    public synchronized void setBackgroundColor(Color color) {
+        TextConsole.setBackgroundColor(color);
     }
 }

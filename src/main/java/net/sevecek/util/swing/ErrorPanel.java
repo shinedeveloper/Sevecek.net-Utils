@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.logging.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.xml.ws.*;
 
 public class ErrorPanel extends JPanel {
 

@@ -1,22 +1,24 @@
 package net.sevecek.console;
 
+import java.awt.Color;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.*;
-import java.nio.charset.*;
-import java.text.*;
-import java.util.*;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 
 abstract class AbstractConsoleMethods implements ConsoleMethods {
 
     protected abstract int readPhysicalChar() throws IOException;
 
+    @Override
     public abstract String readLine();
 
+    @Override
     public abstract String readLine(String message, Object... args);
 
+    @Override
     public abstract char[] readPassword();
 
+    @Override
     public abstract char[] readPassword(String message, Object... args);
 
 
@@ -186,16 +188,22 @@ abstract class AbstractConsoleMethods implements ConsoleMethods {
 
     //------------------------------------------------------------------------
 
+    @Override
     public abstract void print(String text);
 
+    @Override
     public abstract void print(char c);
 
+    @Override
     public abstract void println();
 
+    @Override
     public abstract void println(char c);
 
+    @Override
     public abstract void println(String text);
 
+    @Override
     public abstract void printf(String format, Object... args);
 
 
@@ -207,7 +215,7 @@ abstract class AbstractConsoleMethods implements ConsoleMethods {
 
     @Override
     public void print(int i) {
-        String text = NumberFormat.getIntegerInstance().format((long) i);
+        String text = NumberFormat.getIntegerInstance().format(i);
         print(text);
     }
 
@@ -296,26 +304,319 @@ abstract class AbstractConsoleMethods implements ConsoleMethods {
         printf(format + "%n", args);
     }
 
-    public Object readPrivateField(Object subject, String name) throws NoSuchFieldException, IllegalAccessException, SecurityException {
-        Class<?> subjectClass = subject.getClass();
-        Field inField = null;
-        while (inField == null && subjectClass != null) {
-            try {
-                inField = subjectClass.getDeclaredField(name);
-            } catch (NoSuchFieldException e) {
-                subjectClass = subjectClass.getSuperclass();
+
+    @Override
+    public void setTextColor(Color color) {
+        if (color != null) {
+            int ansiColor = findNearestAnsiColor(color);
+            print("\u001b[38;5;" + ansiColor + "m");
+        } else {
+            print("\u001b[0m");
+        }
+    }
+
+
+    @Override
+    public void setBackgroundColor(Color color) {
+        if (color != null) {
+            int ansiColor = findNearestAnsiColor(color);
+            print("\u001b[48;5;" + ansiColor + "m");
+        } else {
+            print("\u001b[0m");
+        }
+    }
+
+
+    private int findNearestAnsiColor(Color color) {
+        int nearestIndex = 0;
+        double nearestDistance = (
+                Math.abs(ansiColors[0].r - color.getRed())
+                + Math.abs(ansiColors[0].g - color.getGreen())
+                + Math.abs(ansiColors[0].b - color.getBlue())) / 3.0;
+
+        for (int i=1; i<ansiColors.length; i++) {
+            Rgb ansiColor = ansiColors[i];
+            double distance = (
+                    Math.abs(ansiColor.r - color.getRed())
+                    + Math.abs(ansiColor.g - color.getGreen())
+                    + Math.abs(ansiColor.b - color.getBlue())) / 3.0;
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestIndex = i;
             }
         }
-        if (inField == null) throw new NoSuchFieldException(MessageFormat.format("There is no field {0} in class {1}", name, subject.getClass().getName()));
+        return nearestIndex;
+    }
 
-        boolean originalAccessible = inField.isAccessible();
-        inField.setAccessible(true);
-        Object value;
-        try {
-            value = inField.get(subject);
-        } finally {
-            inField.setAccessible(originalAccessible);
+
+    private static final Rgb[] ansiColors = new Rgb[] {
+        new Rgb(0,0,0),
+        new Rgb(128,0,0),
+        new Rgb(0,128,0),
+        new Rgb(128,128,0),
+        new Rgb(0,0,128),
+        new Rgb(128,0,128),
+        new Rgb(0,128,128),
+        new Rgb(192,192,192),
+        new Rgb(128,128,128),
+        new Rgb(255,0,0),
+        new Rgb(0,255,0),
+        new Rgb(255,255,0),
+        new Rgb(0,0,255),
+        new Rgb(255,0,255),
+        new Rgb(0,255,255),
+        new Rgb(255,255,255),
+        new Rgb(0,0,0),
+        new Rgb(0,0,95),
+        new Rgb(0,0,135),
+        new Rgb(0,0,175),
+        new Rgb(0,0,215),
+        new Rgb(0,0,255),
+        new Rgb(0,95,0),
+        new Rgb(0,95,95),
+        new Rgb(0,95,135),
+        new Rgb(0,95,175),
+        new Rgb(0,95,215),
+        new Rgb(0,95,255),
+        new Rgb(0,135,0),
+        new Rgb(0,135,95),
+        new Rgb(0,135,135),
+        new Rgb(0,135,175),
+        new Rgb(0,135,215),
+        new Rgb(0,135,255),
+        new Rgb(0,175,0),
+        new Rgb(0,175,95),
+        new Rgb(0,175,135),
+        new Rgb(0,175,175),
+        new Rgb(0,175,215),
+        new Rgb(0,175,255),
+        new Rgb(0,215,0),
+        new Rgb(0,215,95),
+        new Rgb(0,215,135),
+        new Rgb(0,215,175),
+        new Rgb(0,215,215),
+        new Rgb(0,215,255),
+        new Rgb(0,255,0),
+        new Rgb(0,255,95),
+        new Rgb(0,255,135),
+        new Rgb(0,255,175),
+        new Rgb(0,255,215),
+        new Rgb(0,255,255),
+        new Rgb(95,0,0),
+        new Rgb(95,0,95),
+        new Rgb(95,0,135),
+        new Rgb(95,0,175),
+        new Rgb(95,0,215),
+        new Rgb(95,0,255),
+        new Rgb(95,95,0),
+        new Rgb(95,95,95),
+        new Rgb(95,95,135),
+        new Rgb(95,95,175),
+        new Rgb(95,95,215),
+        new Rgb(95,95,255),
+        new Rgb(95,135,0),
+        new Rgb(95,135,95),
+        new Rgb(95,135,135),
+        new Rgb(95,135,175),
+        new Rgb(95,135,215),
+        new Rgb(95,135,255),
+        new Rgb(95,175,0),
+        new Rgb(95,175,95),
+        new Rgb(95,175,135),
+        new Rgb(95,175,175),
+        new Rgb(95,175,215),
+        new Rgb(95,175,255),
+        new Rgb(95,215,0),
+        new Rgb(95,215,95),
+        new Rgb(95,215,135),
+        new Rgb(95,215,175),
+        new Rgb(95,215,215),
+        new Rgb(95,215,255),
+        new Rgb(95,255,0),
+        new Rgb(95,255,95),
+        new Rgb(95,255,135),
+        new Rgb(95,255,175),
+        new Rgb(95,255,215),
+        new Rgb(95,255,255),
+        new Rgb(135,0,0),
+        new Rgb(135,0,95),
+        new Rgb(135,0,135),
+        new Rgb(135,0,175),
+        new Rgb(135,0,215),
+        new Rgb(135,0,255),
+        new Rgb(135,95,0),
+        new Rgb(135,95,95),
+        new Rgb(135,95,135),
+        new Rgb(135,95,175),
+        new Rgb(135,95,215),
+        new Rgb(135,95,255),
+        new Rgb(135,135,0),
+        new Rgb(135,135,95),
+        new Rgb(135,135,135),
+        new Rgb(135,135,175),
+        new Rgb(135,135,215),
+        new Rgb(135,135,255),
+        new Rgb(135,175,0),
+        new Rgb(135,175,95),
+        new Rgb(135,175,135),
+        new Rgb(135,175,175),
+        new Rgb(135,175,215),
+        new Rgb(135,175,255),
+        new Rgb(135,215,0),
+        new Rgb(135,215,95),
+        new Rgb(135,215,135),
+        new Rgb(135,215,175),
+        new Rgb(135,215,215),
+        new Rgb(135,215,255),
+        new Rgb(135,255,0),
+        new Rgb(135,255,95),
+        new Rgb(135,255,135),
+        new Rgb(135,255,175),
+        new Rgb(135,255,215),
+        new Rgb(135,255,255),
+        new Rgb(175,0,0),
+        new Rgb(175,0,95),
+        new Rgb(175,0,135),
+        new Rgb(175,0,175),
+        new Rgb(175,0,215),
+        new Rgb(175,0,255),
+        new Rgb(175,95,0),
+        new Rgb(175,95,95),
+        new Rgb(175,95,135),
+        new Rgb(175,95,175),
+        new Rgb(175,95,215),
+        new Rgb(175,95,255),
+        new Rgb(175,135,0),
+        new Rgb(175,135,95),
+        new Rgb(175,135,135),
+        new Rgb(175,135,175),
+        new Rgb(175,135,215),
+        new Rgb(175,135,255),
+        new Rgb(175,175,0),
+        new Rgb(175,175,95),
+        new Rgb(175,175,135),
+        new Rgb(175,175,175),
+        new Rgb(175,175,215),
+        new Rgb(175,175,255),
+        new Rgb(175,215,0),
+        new Rgb(175,215,95),
+        new Rgb(175,215,135),
+        new Rgb(175,215,175),
+        new Rgb(175,215,215),
+        new Rgb(175,215,255),
+        new Rgb(175,255,0),
+        new Rgb(175,255,95),
+        new Rgb(175,255,135),
+        new Rgb(175,255,175),
+        new Rgb(175,255,215),
+        new Rgb(175,255,255),
+        new Rgb(215,0,0),
+        new Rgb(215,0,95),
+        new Rgb(215,0,135),
+        new Rgb(215,0,175),
+        new Rgb(215,0,215),
+        new Rgb(215,0,255),
+        new Rgb(215,95,0),
+        new Rgb(215,95,95),
+        new Rgb(215,95,135),
+        new Rgb(215,95,175),
+        new Rgb(215,95,215),
+        new Rgb(215,95,255),
+        new Rgb(215,135,0),
+        new Rgb(215,135,95),
+        new Rgb(215,135,135),
+        new Rgb(215,135,175),
+        new Rgb(215,135,215),
+        new Rgb(215,135,255),
+        new Rgb(215,175,0),
+        new Rgb(215,175,95),
+        new Rgb(215,175,135),
+        new Rgb(215,175,175),
+        new Rgb(215,175,215),
+        new Rgb(215,175,255),
+        new Rgb(215,215,0),
+        new Rgb(215,215,95),
+        new Rgb(215,215,135),
+        new Rgb(215,215,175),
+        new Rgb(215,215,215),
+        new Rgb(215,215,255),
+        new Rgb(215,255,0),
+        new Rgb(215,255,95),
+        new Rgb(215,255,135),
+        new Rgb(215,255,175),
+        new Rgb(215,255,215),
+        new Rgb(215,255,255),
+        new Rgb(255,0,0),
+        new Rgb(255,0,95),
+        new Rgb(255,0,135),
+        new Rgb(255,0,175),
+        new Rgb(255,0,215),
+        new Rgb(255,0,255),
+        new Rgb(255,95,0),
+        new Rgb(255,95,95),
+        new Rgb(255,95,135),
+        new Rgb(255,95,175),
+        new Rgb(255,95,215),
+        new Rgb(255,95,255),
+        new Rgb(255,135,0),
+        new Rgb(255,135,95),
+        new Rgb(255,135,135),
+        new Rgb(255,135,175),
+        new Rgb(255,135,215),
+        new Rgb(255,135,255),
+        new Rgb(255,175,0),
+        new Rgb(255,175,95),
+        new Rgb(255,175,135),
+        new Rgb(255,175,175),
+        new Rgb(255,175,215),
+        new Rgb(255,175,255),
+        new Rgb(255,215,0),
+        new Rgb(255,215,95),
+        new Rgb(255,215,135),
+        new Rgb(255,215,175),
+        new Rgb(255,215,215),
+        new Rgb(255,215,255),
+        new Rgb(255,255,0),
+        new Rgb(255,255,95),
+        new Rgb(255,255,135),
+        new Rgb(255,255,175),
+        new Rgb(255,255,215),
+        new Rgb(255,255,255),
+        new Rgb(8,8,8),
+        new Rgb(18,18,18),
+        new Rgb(28,28,28),
+        new Rgb(38,38,38),
+        new Rgb(48,48,48),
+        new Rgb(58,58,58),
+        new Rgb(68,68,68),
+        new Rgb(78,78,78),
+        new Rgb(88,88,88),
+        new Rgb(98,98,98),
+        new Rgb(108,108,108),
+        new Rgb(118,118,118),
+        new Rgb(128,128,128),
+        new Rgb(138,138,138),
+        new Rgb(148,148,148),
+        new Rgb(158,158,158),
+        new Rgb(168,168,168),
+        new Rgb(178,178,178),
+        new Rgb(188,188,188),
+        new Rgb(198,198,198),
+        new Rgb(208,208,208),
+        new Rgb(218,218,218),
+        new Rgb(228,228,228),
+        new Rgb(238,238,238)
+    };
+
+
+    private static class Rgb {
+        public Rgb(int r, int g, int b) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
         }
-        return value;
+        final int r;
+        final int g;
+        final int b;
     }
 }

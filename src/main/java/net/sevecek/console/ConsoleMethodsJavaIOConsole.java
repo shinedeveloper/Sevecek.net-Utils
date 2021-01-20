@@ -1,7 +1,7 @@
 package net.sevecek.console;
 
-import java.io.*;
-import java.nio.charset.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements ConsoleMethods {
 
@@ -11,27 +11,32 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
     }
 
 
+    @Override
     public String readLine() {
         return System.console().readLine();
     }
 
 
+    @Override
     public String readLine(String message, Object... args) {
         return System.console().readLine(message, args);
     }
 
 
+    @Override
     public char[] readPassword() {
         return System.console().readPassword();
     }
 
 
+    @Override
     public char[] readPassword(String message, Object... args) {
         return System.console().readPassword(message, args);
     }
 
     //-------------------------------------------------------------------
 
+    @Override
     public void print(char c) {
         PrintWriter writer = System.console().writer();
         writer.print(c);
@@ -39,6 +44,7 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
     }
 
 
+    @Override
     public void print(String text) {
         PrintWriter writer = System.console().writer();
         writer.print(text);
@@ -46,6 +52,7 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
     }
 
 
+    @Override
     public void println() {
         PrintWriter writer = System.console().writer();
         writer.println();
@@ -53,6 +60,7 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
     }
 
 
+    @Override
     public void println(char c) {
         PrintWriter writer = System.console().writer();
         writer.println(c);
@@ -60,6 +68,7 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
     }
 
 
+    @Override
     public void println(String text) {
         PrintWriter writer = System.console().writer();
         writer.println(text);
@@ -67,8 +76,15 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
     }
 
 
+    @Override
     public void printf(String format, Object... args) {
         System.console().printf(format, args).flush();
+    }
+
+
+    @Override
+    public String getInputCharset() {
+        return null;
     }
 
 
@@ -78,21 +94,8 @@ class ConsoleMethodsJavaIOConsole extends AbstractConsoleMethods implements Cons
 
 
     @Override
-    public String getInputCharset() {
-        try {
-            Charset cs = (Charset) readPrivateField(System.console(), "cs");
-            return cs.name();
-        } catch (NoSuchFieldException e) {
-            throw new IllegalStateException("Unsupported System.console() object", e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Unable to inspect Unsupported System.console() object", e);
-        }
-    }
-
-
-    @Override
     public String getOutputCharset() {
-        return getInputCharset();
+        return null;
     }
 
 

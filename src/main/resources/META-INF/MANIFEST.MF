@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Implementation-Title: Sevecek.net Utils
+Implementation-Version: 0.92
+Automatic-Module-Name: net.sevecek.sevecek-net-utils

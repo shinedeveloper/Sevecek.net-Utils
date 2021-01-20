@@ -1,7 +1,6 @@
 package net.sevecek.console;
 
-import java.io.PrintWriter;
-
+import java.awt.Color;
 
 interface ConsoleMethods {
 
@@ -37,10 +36,15 @@ interface ConsoleMethods {
     void printf(String format, Object... args);
     void printfln(String format, Object... args);
 
-    void setInputCharset(String charsetName);
+    //-------------------------------------------------------------
+
+    void setTextColor(Color color);
+    void setBackgroundColor(Color color);
+
+    //-------------------------------------------------------------
+
     String getInputCharset();
-
+    void setInputCharset(String charsetName);
     String getOutputCharset();
-
     void setOutputCharset(String charsetName);
 }

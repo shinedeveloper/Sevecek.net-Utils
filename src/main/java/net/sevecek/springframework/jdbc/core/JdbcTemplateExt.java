@@ -1,9 +1,10 @@
-package org.springframework.jdbc.core;
+package net.sevecek.springframework.jdbc.core;
 
 import java.sql.*;
 import java.util.*;
 import javax.sql.*;
 import org.springframework.dao.*;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.support.*;
 import org.springframework.util.*;
 
